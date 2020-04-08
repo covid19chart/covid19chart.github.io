@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en-us">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <title>Covid2019</title>
+
+    <style>
+        html {
+            height: 100%;
+        }
+        body {
+            border-top: 1px solid #2f2f2f;
+            border-bottom: 1px solid #313131;
+            height: calc(100% - 2px)
+        }
+        html,
+        body {
+            padding: 0;
+            margin: 0;
+            overflow: hidden;
+            background-color: #363636
+        }
+        /* the canvas *must not* have any border or padding, or mouse coords will be wrong */
+        canvas {
+            border: 0px none;
+            height: 100%;
+            width: 100%;
+            background-color: transparent
+        }
+        /* The contenteditable property is set to true for the canvas in order to support
+         clipboard events. Hide the resulting focus frame and set the cursor back  to
+         the default cursor. */
+        canvas {
+            outline: 0px solid transparent;
+            caret-color: transparent;
+            cursor: default
+        }
+    </style>
+
+</head>
+
+<body onload="init()">
+
+    <figure id="qtspinner" style="overflow:visible; width: 100%">
+        <center style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%">
+            <img src="covid2019.svg" style="display: block; width: 90%"></img>
+            <div>&nbsp;</div>
+            <div id="qtstatus" style="color: #aaa"></div>
+            <noscript>JavaScript is disabled. Please enable JavaScript to use this application.</noscript>
+        </center>
+    </figure>
+
+    <canvas id="qtcanvas" oncontextmenu="event.preventDefault()"></canvas>
+
+    <script type='text/javascript'>
+        /* iOS re-orientation fix */
+        window.onresize = function() {
+            setTimeout(function() {
+                window.scrollTo(0, 1)
+            }, 20)
+        }
+        window.onresize = function() {
+            setTimeout(function() {
+                window.scrollTo(0, 1)
+            }, 50)
+        }
+        window.onresize = function() {
+            setTimeout(function() {
+                window.scrollTo(0, 1)
+            }, 100)
+        }
+    </script>
+
+    <script type='text/javascript'>
+        /* initialization */
+        function init() {
+            var spinner = document.querySelector('#qtspinner')
+            var canvas = document.querySelector('#qtcanvas')
+            var status = document.querySelector('#qtstatus')
+            var qtLoader = QtLoader({
+                canvasElements: [canvas],
+                showLoader: function(loaderStatus) {
+                    spinner.style.display = 'block'
+                    canvas.style.display = 'none'
+                    status.innerHTML = loaderStatus + "..."
+                },
+                showError: function(errorText) {
+                    status.innerHTML = errorText
+                    spinner.style.display = 'block'
+                    canvas.style.display = 'none'
+                },
+                showExit: function() {
+                    status.innerHTML = "Application exit"
+                    if (qtLoader.exitCode !== undefined)
+                        status.innerHTML += " with code " + qtLoader.exitCode
+                    if (qtLoader.exitText !== undefined)
+                        status.innerHTML += " (" + qtLoader.exitText + ")"
+                    spinner.style.display = 'block'
+                    canvas.style.display = 'none'
+                },
+                showCanvas: function() {
+                    spinner.style.display = 'none'
+                    canvas.style.display = 'block'
+                },
+            })
+            qtLoader.loadEmscriptenModule("covid2019")
+        }
+    </script>
+
+    <script type="text/javascript" src="qtloader.js"></script>
+
+</body>
+
+</html>
